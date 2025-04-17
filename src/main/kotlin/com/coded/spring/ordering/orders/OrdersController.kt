@@ -1,28 +1,30 @@
 package com.coded.spring.ordering.orders
-
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
-import org.springframework.data.domain.Sort
 
 @RestController
-class OrdersController(private val ordersRepository: OrdersRepo) {
+@RequestMapping("/orders")
+class OrdersController(
+    private val ordersRepo: OrdersRepo
+) {
 
-    @GetMapping("/orders")
-    fun getAllOrders() = ordersRepository.findAll(Sort.by(Sort.Direction.ASC, "createdAt"))
-
-    @PostMapping("/orders")
-    fun orderItems(@RequestBody request: OrderItemsRequest) =
-        ordersRepository.save(
+    @PostMapping
+    fun orderItems(@RequestBody request: OrderItemsRequest): Order {
+        return ordersRepo.save(
             Order(
-                username = request.user,
+                userId = request.user,
                 restaurant = request.restaurant,
-                items = request.items.joinToString(", ")
+                items = request.items
             )
         )
+    }
+
+    @GetMapping
+    fun getAllOrders(): List<Order> =
+        ordersRepo.findAllByOrderByCreatedAtAsc()
 }
 
 data class OrderItemsRequest(
-    val user: String,
+    val user: Long,
     val restaurant: String,
-    val items: List<String>
+    val items: String
 )

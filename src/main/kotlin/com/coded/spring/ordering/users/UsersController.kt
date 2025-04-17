@@ -1,19 +1,19 @@
-
 package com.coded.spring.ordering.users
 
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UsersController(private val usersRepository: UsersRepo) {
+@RequestMapping("/users")
+class UsersController(private val usersRepo: UsersRepo) {
 
-    @PostMapping("/com/coded/spring/ordering/users")
-    fun createUser(@RequestBody request: CreateUserRequest) = usersRepository.save(User(name = request.name, email = request.email))
+    @PostMapping
+    fun createUser(@RequestBody request: CreateUserRequest) =
+        usersRepo.save(User(name = request.name))
 
-    @GetMapping("/com/coded/spring/ordering/users")
-    fun getAllUsers() = usersRepository.findAll()
+    @GetMapping
+    fun getAllUsers() = usersRepo.findAll()
 }
 
 data class CreateUserRequest(
     val name: String,
-    val email: String
 )
